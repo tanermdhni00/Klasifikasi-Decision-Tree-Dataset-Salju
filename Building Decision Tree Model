@@ -1,0 +1,58 @@
+##Building Decision Tree Model
+feature_cols = ['SuhuMin', 'SuhuMax', 'Hujan', 'Penguapan', 'SinarMatahari', 'KecepatanAnginTerkencang', 'KecepatanAngin9am', 'KecepatanAngin3pm', 'Kelembaban9am', 'Kelembaban3pm', 'Tekanan9am', 'Tekanan3pm', 'Awan9am', 'Awan3pm', 'Suhu9am', 'Suhu3pm']
+
+from sklearn.tree import DecisionTreeClassifier
+
+# Create Decision Tree classifer object
+clf = DecisionTreeClassifier()
+
+# Train Decision Tree Classifer
+clf = clf.fit(trainX,trainY)
+
+#Predict the response for test dataset
+y_pred = clf.predict(testX)
+
+##Evaluating Model
+from sklearn import metrics
+
+print("Accuracy:",metrics.accuracy_score(testY, y_pred))
+
+##Visualizing Decision Trees
+from sklearn.tree import export_graphviz
+from sklearn.externals.six import StringIO  
+from IPython.display import Image  
+import pydotplus
+
+dot_data = StringIO()
+export_graphviz(clf, out_file=dot_data,  
+                filled=True, rounded=True,
+                special_characters=True,feature_names = feature_cols,class_names=['Tidak','Ya'])
+graph = pydotplus.graph_from_dot_data(dot_data.getvalue())  
+graph.write_png('salju.png')
+Image(graph.create_png())
+
+##Optimizing Decision Tree Performance - Memangkas Decision Tree
+# Create Decision Tree classifer object
+clf = DecisionTreeClassifier(criterion="entropy", max_depth=3)
+
+# Train Decision Tree Classifer
+clf = clf.fit(trainX,trainY)
+
+#Predict the response for test dataset
+y_pred = clf.predict(testX)
+
+# Model Accuracy, how often is the classifier correct?
+print("Accuracy:",metrics.accuracy_score(testY, y_pred))
+
+##Visualizing Decision Trees
+from sklearn.externals.six import StringIO  
+from IPython.display import Image  
+from sklearn.tree import export_graphviz
+import pydotplus
+dot_data = StringIO()
+export_graphviz(clf, out_file=dot_data,  
+                filled=True, rounded=True,
+                special_characters=True, feature_names = feature_cols,class_names=['Tidak','Ya'])
+graph = pydotplus.graph_from_dot_data(dot_data.getvalue())  
+graph.write_png('saljusetelahdipangkas.png')
+Image(graph.create_png())
